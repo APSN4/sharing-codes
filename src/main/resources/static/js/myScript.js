@@ -22,7 +22,8 @@ function send() {
     let object = {
         "code": document.getElementById("code_snippet").value,
         "views": document.getElementById("views_restriction").value,
-        "time": document.getElementById("time_restriction").value
+        "time": document.getElementById("time_restriction").value,
+        "password": document.getElementById("password_field").value
     };
 
     let json = JSON.stringify(object);
@@ -54,5 +55,34 @@ function send() {
         successMessage.style.display = "none";
         errorCode.innerHTML = xhr.status + " " + xhr.statusText;
         return;
+    }
+}
+
+function check() {
+    var object = {
+        "password": document.getElementById("password_field").value
+    };
+
+    try {
+        var xhr = new XMLHttpRequest();
+        var url = location.protocol + '//' + location.host + location.pathname + '?password=' + object.password;
+        xhr.open("GET", url, false);
+
+        xhr.send();
+
+        if (xhr.status == 200) {
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(xhr.responseText, 'text/html');
+            var pageStatusMeta = doc.querySelector('meta[name="page-status"]');
+            if (pageStatusMeta && pageStatusMeta.content === "available") {
+                window.location.href = url;
+            } else {
+                dangerMessage.style.display = "block";
+            }
+        } else {
+            console.error('Request failed with status:', xhr.status);
+        }
+    } catch (error) {
+        console.error(error.message);
     }
 }

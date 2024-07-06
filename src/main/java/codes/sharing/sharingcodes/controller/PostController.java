@@ -1,5 +1,6 @@
 package codes.sharing.sharingcodes.controller;
 
+import codes.sharing.sharingcodes.dto.PasswordDTO;
 import codes.sharing.sharingcodes.model.Code;
 import codes.sharing.sharingcodes.service.CodeService;
 import org.springframework.beans.factory.annotation.Autowired;

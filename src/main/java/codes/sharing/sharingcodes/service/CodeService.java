@@ -1,6 +1,7 @@
 package codes.sharing.sharingcodes.service;
 
 import codes.sharing.sharingcodes.dto.DateDTO;
+import codes.sharing.sharingcodes.dto.PasswordDTO;
 import codes.sharing.sharingcodes.model.Code;
 
 import java.util.List;
