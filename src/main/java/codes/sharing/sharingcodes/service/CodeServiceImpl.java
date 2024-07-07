@@ -25,10 +25,6 @@ public class CodeServiceImpl implements CodeService{
 
     @Override
     public Code getById(String id) {
-        Code code = repo.findById(id).orElseThrow(() -> new NotFoundSnippet(id));
-        if (code.hasLimit()) {
-            refresh(code);
-        }
         return repo.findById(id).orElseThrow(() -> new NotFoundSnippet(id));
     }
 
@@ -38,6 +34,14 @@ public class CodeServiceImpl implements CodeService{
         System.out.printf("The code with UUID %s was created\n", code.getId());
         repo.save(code);
     }
+
+    @Override
+    public void refreshCode(Code code) {
+        if (code.hasLimit()) {
+            refresh(code);
+        }
+    }
+
 
     @Override
     public List<Code> getLatestNCode(int n) {
@@ -79,7 +83,7 @@ public class CodeServiceImpl implements CodeService{
     private void refresh(Code code) {
         if (code.isViewsLimit() && code.getViews() >= 0) {
             code.setViews(code.getViews() - 1);
-            if (code.getViews() < 0) {
+            if (code.getViews() <= 0) {
                 repo.delete(code);
                 return;
             }

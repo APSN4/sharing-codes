@@ -28,6 +28,7 @@ public class GetController {
             if (!password.equals(currentCode.getPassword())) {
                 return "password";
             }
+            codeService.refreshCode(currentCode);
 
             DateDTO dateDTO = codeService.formatDate(currentCode.getDate());
             model.addAttribute("pieceOfCode", currentCode);

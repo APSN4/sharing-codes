@@ -12,6 +12,8 @@ public interface CodeService {
 
     public void putCode(Code newCode);
 
+    public void refreshCode(Code code);
+
     public List<Code> getLatestNCode(int n);
 
     public boolean isExist(String id);

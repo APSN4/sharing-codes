@@ -59,28 +59,27 @@ function send() {
 }
 
 function check() {
+    const codeId = location.pathname.substring(6);
     var object = {
-        "password": document.getElementById("password_field").value
+        "password": document.getElementById("password_field").value,
+        "id": codeId
     };
+    let json = JSON.stringify(object);
 
     try {
-        var xhr = new XMLHttpRequest();
-        var url = location.protocol + '//' + location.host + location.pathname + '?password=' + object.password;
-        xhr.open("GET", url, false);
+        xhr = new XMLHttpRequest();
+        xhr.open("POST", '/api/code/password', false)
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.send(json);
 
-        xhr.send();
+        var url = location.protocol + '//' + location.host + location.pathname + '?password=' + object.password;
 
         if (xhr.status == 200) {
-            var parser = new DOMParser();
-            var doc = parser.parseFromString(xhr.responseText, 'text/html');
-            var pageStatusMeta = doc.querySelector('meta[name="page-status"]');
-            if (pageStatusMeta && pageStatusMeta.content === "available") {
-                window.location.href = url;
-            } else {
-                dangerMessage.style.display = "block";
-            }
+            window.location.href = url;
+        } else if (xhr.status == 400){
+            dangerMessage.style.display = "block";
         } else {
-            console.error('Request failed with status:', xhr.status);
+            window.location.href = url;
         }
     } catch (error) {
         console.error(error.message);
