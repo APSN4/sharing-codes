@@ -1,0 +1,8 @@
+FROM gradle:7.4.1-jdk11 as builder
+WORKDIR /app
+
+COPY . .
+
+RUN gradle build -x test
+
+RUN mkdir -p /artifacts && cp /app/build/libs/*.jar /artifacts/

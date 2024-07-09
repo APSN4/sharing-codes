@@ -1,0 +1,20 @@
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - docker build -t app-builder -f Dockerfile.build .
+    - docker create --name builder-container app-build
+    - docker cp build-container:/artifacts/app.jar ./artifacts/app.jar
+    - docker rm build-container
+  artifacts:
+    paths:
+      - artifacts/app.jar
+
+deploy:
+  stage: deploy
+  script:
+    - docker build -t run-app -f Dockerfile.run .
+    - docker run run-app
