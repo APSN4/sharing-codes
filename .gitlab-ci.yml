@@ -41,6 +41,7 @@ deploy:
         docker rm run-app || true
       fi
     - docker build -t run-app -f Dockerfile.run .
-    - docker run -d -p 8000:8000 run-app
+    - docker run -d --name run-app -p 8000:8000 run-app
     - sleep 10
     - curl -f http://localhost:8000 || exit 1
+
