@@ -23,7 +23,7 @@ build:
     - mkdir -p artifacts
     - docker build -t app-builder -f Dockerfile.build .
     - docker run --name builder-container app-builder /bin/sh -c "ls /artifacts" || true
-    - docker cp builder-container:/artifacts/app.jar ./artifacts/app.jar
+    - docker cp builder-container:/artifacts/sharingcodes-0.0.1-SNAPSHOT.jar ./artifacts/app.jar
     - docker rm builder-container
   artifacts:
     paths:
