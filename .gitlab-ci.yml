@@ -35,6 +35,11 @@ deploy:
     - build
   script:
     - echo "Deploying the application..."
+    - |
+      if [ $(docker ps -aq -f name=run-app) ]; then
+        docker stop run-app || true
+        docker rm run-app || true
+      fi
     - docker build -t run-app -f Dockerfile.run .
     - docker run -d -p 8000:8000 run-app
     - sleep 10
