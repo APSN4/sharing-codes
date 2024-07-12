@@ -15,14 +15,13 @@ build:
   stage: build
   script:
     - echo "Building the application..."
-    - docker info
-    - mkdir -p artifacts
-    - docker build -t app-builder -f Dockerfile.build .
     - |
       if [ $(docker ps -aq -f name=builder-container) ]; then
         docker stop builder-container || true
         docker rm builder-container || true
       fi
+    - mkdir -p artifacts
+    - docker build -t app-builder -f Dockerfile.build .
     - docker create --name builder-container app-builder
     - docker exec builder-container ls /artifacts
     - docker cp builder-container:/artifacts/app.jar ./artifacts/app.jar
