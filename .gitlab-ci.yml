@@ -24,6 +24,7 @@ build:
         docker rm builder-container || true
       fi
     - docker create --name builder-container app-builder
+    - docker exec builder-container ls /artifacts
     - docker cp builder-container:/artifacts/app.jar ./artifacts/app.jar
     - docker rm builder-container
   artifacts:
@@ -32,8 +33,9 @@ build:
 
 deploy:
   stage: deploy
+  dependencies:
+    - build
   script:
     - echo "Deploying the application..."
-    - docker info
     - docker build -t run-app -f Dockerfile.run .
     - docker run run-app
