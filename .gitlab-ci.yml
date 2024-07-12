@@ -16,7 +16,7 @@ build:
     - apt-get update
     - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     - docker --version
-    - sudo systemctl start docker
+    - sudo dockerd &
     - sudo docker build -t app-builder -f Dockerfile.build .
     - sudo docker create --name builder-container app-builder
     - sudo docker cp builder-container:/artifacts/app.jar ./artifacts/app.jar
@@ -37,6 +37,6 @@ deploy:
     - apt-get update
     - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     - docker --version
-    - sudo systemctl start docker
+    - sudo dockerd &
     - sudo docker build -t run-app -f Dockerfile.run .
     - sudo docker run run-app
