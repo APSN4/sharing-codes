@@ -6,13 +6,6 @@ build:
   stage: build
   script:
     - apt-get update
-    - apt-get install -y curl xz-utils build-essential
-    - curl -O https://ftp.gnu.org/gnu/coreutils/coreutils-8.32.tar.xz
-    - tar -xf coreutils-8.32.tar.xz
-    - cd coreutils-8.32
-    - FORCE_UNSAFE_CONFIGURE=1 ./configure
-    - make
-    - make install
     - apt-get install -y ca-certificates curl
     - install -m 0755 -d /etc/apt/keyrings
     - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
@@ -20,7 +13,9 @@ build:
     - echo \
       "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
       $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-      tee /etc/apt/sources.list.d/docker.list > /dev/null
+      sh -c 'cat > /etc/apt/sources.list.d/docker.list <<EOF
+      deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable
+      EOF'
     - apt-get update
     - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     - docker build -t app-builder -f Dockerfile.build .
@@ -35,13 +30,6 @@ deploy:
   stage: deploy
   script:
     - apt-get update
-    - apt-get install -y curl xz-utils build-essential
-    - curl -O https://ftp.gnu.org/gnu/coreutils/coreutils-8.32.tar.xz
-    - tar -xf coreutils-8.32.tar.xz
-    - cd coreutils-8.32
-    - FORCE_UNSAFE_CONFIGURE=1 ./configure
-    - make
-    - make install
     - apt-get install -y ca-certificates curl
     - install -m 0755 -d /etc/apt/keyrings
     - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
@@ -49,7 +37,9 @@ deploy:
     - echo \
       "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
       $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-      tee /etc/apt/sources.list.d/docker.list > /dev/null
+      sh -c 'cat > /etc/apt/sources.list.d/docker.list <<EOF
+      deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable
+      EOF'
     - apt-get update
     - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     - docker build -t run-app -f Dockerfile.run .
