@@ -15,6 +15,7 @@ build:
   stage: build
   script:
     - echo "Building the application..."
+    - docker info
     - docker build -t app-builder -f Dockerfile.build .
     - docker create --name builder-container app-builder
     - docker cp builder-container:/artifacts/app.jar ./artifacts/app.jar
@@ -27,5 +28,6 @@ deploy:
   stage: deploy
   script:
     - echo "Deploying the application..."
+    - docker info
     - docker build -t run-app -f Dockerfile.run .
     - docker run run-app
