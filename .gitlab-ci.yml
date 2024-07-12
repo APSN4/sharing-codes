@@ -16,6 +16,7 @@ build:
   script:
     - echo "Building the application..."
     - docker info
+    - mkdir -p artifacts
     - docker build -t app-builder -f Dockerfile.build .
     - docker create --name builder-container app-builder
     - docker cp builder-container:/artifacts/app.jar ./artifacts/app.jar
