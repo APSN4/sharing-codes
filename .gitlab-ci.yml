@@ -12,7 +12,7 @@ build:
     - cd coreutils-8.32
     - FORCE_UNSAFE_CONFIGURE=1 ./configure
     - make
-    - sudo make install
+    - make install
     - apt-get install -y ca-certificates curl
     - install -m 0755 -d /etc/apt/keyrings
     - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
@@ -41,7 +41,7 @@ deploy:
     - cd coreutils-8.32
     - FORCE_UNSAFE_CONFIGURE=1 ./configure
     - make
-    - sudo make install
+    - make install
     - apt-get install -y ca-certificates curl
     - install -m 0755 -d /etc/apt/keyrings
     - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
