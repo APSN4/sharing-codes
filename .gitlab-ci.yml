@@ -6,7 +6,12 @@ build:
   stage: build
   script:
     - apt-get update
-    - apt --reinstall install coreutils
+    - wget https://ftp.gnu.org/gnu/coreutils/coreutils-8.32.tar.xz
+    - tar -xf coreutils-8.32.tar.xz
+    - cd coreutils-8.32
+    - ./configure
+    - make
+    - sudo make install
     - apt-get install -y ca-certificates curl
     - install -m 0755 -d /etc/apt/keyrings
     - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
@@ -29,7 +34,12 @@ deploy:
   stage: deploy
   script:
     - apt-get update
-    - apt --reinstall install coreutils
+    - wget https://ftp.gnu.org/gnu/coreutils/coreutils-8.32.tar.xz
+    - tar -xf coreutils-8.32.tar.xz
+    - cd coreutils-8.32
+    - ./configure
+    - make
+    - sudo make install
     - apt-get install -y ca-certificates curl
     - install -m 0755 -d /etc/apt/keyrings
     - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
