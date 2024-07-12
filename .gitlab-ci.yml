@@ -1,4 +1,11 @@
-image: ubuntu:latest
+image: docker:latest
+
+services:
+  - docker:dind
+
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
 
 stages:
   - build
@@ -7,20 +14,11 @@ stages:
 build:
   stage: build
   script:
-    - apt-get update
-    - apt-get install -y ca-certificates curl sudo
-    - install -m 0755 -d /etc/apt/keyrings
-    - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-    - chmod a+r /etc/apt/keyrings/docker.asc
-    - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list
-    - apt-get update
-    - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-    - docker --version
-    - sudo dockerd &
-    - sudo docker build -t app-builder -f Dockerfile.build .
-    - sudo docker create --name builder-container app-builder
-    - sudo docker cp builder-container:/artifacts/app.jar ./artifacts/app.jar
-    - sudo docker rm builder-container
+    - echo "Building the application..."
+    - docker build -t app-builder -f Dockerfile.build .
+    - docker create --name builder-container app-builder
+    - docker cp builder-container:/artifacts/app.jar ./artifacts/app.jar
+    - docker rm builder-container
   artifacts:
     paths:
       - artifacts/app.jar
@@ -28,15 +26,6 @@ build:
 deploy:
   stage: deploy
   script:
-    - apt-get update
-    - apt-get install -y ca-certificates curl bash sudo
-    - install -m 0755 -d /etc/apt/keyrings
-    - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-    - chmod a+r /etc/apt/keyrings/docker.asc
-    - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list
-    - apt-get update
-    - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-    - docker --version
-    - sudo dockerd &
-    - sudo docker build -t run-app -f Dockerfile.run .
-    - sudo docker run run-app
+    - echo "Deploying the application..."
+    - docker build -t run-app -f Dockerfile.run .
+    - docker run run-app
