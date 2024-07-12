@@ -1,11 +1,15 @@
 image: docker:stable
 
 services:
-  - docker:19.03.12-dind
+  - docker:dind
 
 stages:
   - build
   - deploy
+
+default:
+  before_script:
+    - docker info
 
 build:
   stage: build
