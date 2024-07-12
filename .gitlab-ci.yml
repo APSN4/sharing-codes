@@ -22,8 +22,7 @@ build:
       fi
     - mkdir -p artifacts
     - docker build -t app-builder -f Dockerfile.build .
-    - docker create --name builder-container app-builder
-    - docker exec builder-container ls /artifacts
+    - docker run --name builder-container app-builder /bin/sh -c "ls /artifacts" || true
     - docker cp builder-container:/artifacts/app.jar ./artifacts/app.jar
     - docker rm builder-container
   artifacts:
