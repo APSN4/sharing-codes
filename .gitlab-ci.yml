@@ -18,6 +18,8 @@ build:
     - docker info
     - mkdir -p artifacts
     - docker build -t app-builder -f Dockerfile.build .
+    - docker stop builder-container
+    - docker rm builder-container
     - docker create --name builder-container app-builder
     - docker cp builder-container:/artifacts/app.jar ./artifacts/app.jar
     - docker rm builder-container
