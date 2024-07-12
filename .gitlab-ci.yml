@@ -36,4 +36,6 @@ deploy:
   script:
     - echo "Deploying the application..."
     - docker build -t run-app -f Dockerfile.run .
-    - docker run run-app
+    - docker run -d -p 8080:8080 run-app
+    - sleep 10
+    - curl -f http://localhost:8080 || exit 1
