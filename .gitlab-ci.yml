@@ -1,11 +1,4 @@
-image: docker:latest
-
-services:
-  - name: docker:dind
-    command: ["--tls=false"]
-
-variables:
-  DOCKER_DRIVER: overlay2
+image: ubuntu:latest
 
 stages:
   - build
@@ -14,7 +7,20 @@ stages:
 build:
   stage: build
   script:
-    - unset DOCKER_HOST
+    - apt-get update
+    - apt-get install -y ca-certificates curl bash
+    - which bash
+    - install -m 0755 -d /etc/apt/keyrings
+    - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    - chmod a+r /etc/apt/keyrings/docker.asc
+    - echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+      $(. /etc/os-release && echo \"$VERSION_CODENAME\") stable" | \
+      bash -c 'cat > /etc/apt/sources.list.d/docker.list <<EOF
+      deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable
+      EOF'
+    - apt-get update
+    - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     - docker build -t app-builder -f Dockerfile.build .
     - docker create --name builder-container app-builder
     - docker cp builder-container:/artifacts/app.jar ./artifacts/app.jar
@@ -26,6 +32,18 @@ build:
 deploy:
   stage: deploy
   script:
-    - unset DOCKER_HOST
+    - apt-get update
+    - apt-get install -y ca-certificates curl bash
+    - install -m 0755 -d /etc/apt/keyrings
+    - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    - chmod a+r /etc/apt/keyrings/docker.asc
+    - echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+      $(. /etc/os-release && echo \"$VERSION_CODENAME\") stable" | \
+      bash -c 'cat > /etc/apt/sources.list.d/docker.list <<EOF
+      deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable
+      EOF'
+    - apt-get update
+    - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     - docker build -t run-app -f Dockerfile.run .
     - docker run run-app
