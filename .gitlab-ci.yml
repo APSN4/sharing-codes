@@ -10,7 +10,7 @@ build:
     - curl -O https://ftp.gnu.org/gnu/coreutils/coreutils-8.32.tar.xz
     - tar -xf coreutils-8.32.tar.xz
     - cd coreutils-8.32
-    - ./configure
+    - FORCE_UNSAFE_CONFIGURE=1 ./configure
     - make
     - sudo make install
     - apt-get install -y ca-certificates curl
@@ -39,7 +39,7 @@ deploy:
     - curl -O https://ftp.gnu.org/gnu/coreutils/coreutils-8.32.tar.xz
     - tar -xf coreutils-8.32.tar.xz
     - cd coreutils-8.32
-    - ./configure
+    - FORCE_UNSAFE_CONFIGURE=1 ./configure
     - make
     - sudo make install
     - apt-get install -y ca-certificates curl
