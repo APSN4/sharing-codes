@@ -6,7 +6,7 @@ build:
   stage: build
   script:
     - apt-get update
-    - apt-get install curl
+    - apt-get install -y curl
     - curl -O https://ftp.gnu.org/gnu/coreutils/coreutils-8.32.tar.xz
     - tar -xf coreutils-8.32.tar.xz
     - cd coreutils-8.32
@@ -35,7 +35,7 @@ deploy:
   stage: deploy
   script:
     - apt-get update
-    - apt-get install curl
+    - apt-get install -y curl
     - curl -O https://ftp.gnu.org/gnu/coreutils/coreutils-8.32.tar.xz
     - tar -xf coreutils-8.32.tar.xz
     - cd coreutils-8.32
