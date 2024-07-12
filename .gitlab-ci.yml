@@ -1,18 +1,22 @@
-image: docker:latest
+image: ubuntu:latest
 
 stages:
   - build
   - deploy
 
-variables:
-  DOCKER_HOST: tcp://docker:2375/
-  DOCKER_DRIVER: overlay2
-
 build:
   stage: build
-  services:
-    - docker:dind
   script:
+    - apt-get update
+    - apt-get install -y ca-certificates curl
+    - install -m 0755 -d /etc/apt/keyrings
+    - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    - chmod a+r /etc/apt/keyrings/docker.asc
+    - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list
+    - apt-get update
+    - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    - docker --version
+    - nohup dockerd &
     - docker build -t app-builder -f Dockerfile.build .
     - docker create --name builder-container app-builder
     - docker cp builder-container:/artifacts/app.jar ./artifacts/app.jar
@@ -23,8 +27,16 @@ build:
 
 deploy:
   stage: deploy
-  services:
-    - docker:dind
   script:
+    - apt-get update
+    - apt-get install -y ca-certificates curl bash
+    - install -m 0755 -d /etc/apt/keyrings
+    - curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    - chmod a+r /etc/apt/keyrings/docker.asc
+    - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list
+    - apt-get update
+    - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    - docker --version
+    - nohup dockerd &
     - docker build -t run-app -f Dockerfile.run .
     - docker run run-app
